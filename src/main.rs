@@ -3,7 +3,7 @@
 
 extern crate IOKit_sys as io;
 
-const kOpen: u32  = 0;
+const kOpen: u32 = 0;
 const kClose: u32 = 1;
 
 const kGetMuxState: u32 = 3;
@@ -21,11 +21,8 @@ fn main() {
 
         let service = io::IOServiceMatching(kDriverClassName.as_ptr() as *const std::ffi::c_char);
 
-        let result = io::IOServiceGetMatchingServices(
-            io::kIOMasterPortDefault,
-            service,
-            &mut iterator
-        );
+        let result =
+            io::IOServiceGetMatchingServices(io::kIOMasterPortDefault, service, &mut iterator);
         if result != mach::kern_return::KERN_SUCCESS {
             panic!("IOServiceGetMatchingServices returned non-zero result");
         }
@@ -40,12 +37,24 @@ fn main() {
             panic!("No matching driver found");
         }
 
-        let result = io::IOServiceOpen(service, mach::traps::mach_task_self() as mach::mach_types::task_port_t, 0, &mut connection);
+        let result = io::IOServiceOpen(
+            service,
+            mach::traps::mach_task_self() as mach::mach_types::task_port_t,
+            0,
+            &mut connection,
+        );
         if result != mach::kern_return::KERN_SUCCESS {
             panic!("IOServiceOpen returned non-zero result");
         }
 
-        let result = io::IOConnectCallScalarMethod(connection, kOpen, std::ptr::null(), 0, std::ptr::null_mut(), std::ptr::null_mut());
+        let result = io::IOConnectCallScalarMethod(
+            connection,
+            kOpen,
+            std::ptr::null(),
+            0,
+            std::ptr::null_mut(),
+            std::ptr::null_mut(),
+        );
         if result != mach::kern_return::KERN_SUCCESS {
             panic!("IOConnectCallScalarMethod(kOpen) returned non-zero result");
         }
@@ -59,7 +68,7 @@ fn main() {
             input.as_ptr(),
             2,
             &mut output,
-            &mut output_count
+            &mut output_count,
         );
         if result != mach::kern_return::KERN_SUCCESS {
             panic!("IOServiceGetMatchingServices returned non-zero result");
@@ -69,12 +78,19 @@ fn main() {
     match output {
         0 => println!("Currently using the discrete GPU"),
         1 => println!("Currently using the integrated GPU"),
-        _ => println!("Currently using an unknown GPU")
+        _ => println!("Currently using an unknown GPU"),
     }
 
     unsafe {
         // Close switcher
-        let result = io::IOConnectCallScalarMethod(connection, kClose, std::ptr::null(), 0, std::ptr::null_mut(), std::ptr::null_mut());
+        let result = io::IOConnectCallScalarMethod(
+            connection,
+            kClose,
+            std::ptr::null(),
+            0,
+            std::ptr::null_mut(),
+            std::ptr::null_mut(),
+        );
         if result != mach::kern_return::KERN_SUCCESS {
             panic!("IOConnectCallScalarMethod(kClose) returned non-zero result");
         }
