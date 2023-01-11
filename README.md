@@ -8,3 +8,10 @@ To use, first ensure you have a Rust compiler installed, and then simply run
 `cargo install --git https://github.com/thedjinn/whichgpu.git` to install the
 tool, and then run `whichgpu`. Alternatively, you can clone the repository and
 run `cargo install`.
+
+## Example:
+
+```
+$ whichgpu
+Currently using the integrated GPU
+```
