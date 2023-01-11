@@ -1,0 +1,8 @@
+[package]
+name = "whichgpu"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+IOKit-sys = "0.1.5"
+mach = "0.3.2"
